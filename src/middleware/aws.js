@@ -29,18 +29,34 @@ let uploadFile = async (file) => {
     });
   };
 
-  const awsApi = async function(req,res,next){
+  const awsApi = async function (req, res, next) {
     try {
-        let files = req.files
-        if(files.length == 0) {return res.status(400).send({status:false, message: "Plz Enter Image"})}
-        if(files && files.length > 0) {
-            const uploadFileUrl = await uploadFile(files[0])
-            req.uploadFileUrl = uploadFileUrl
-        }
-        next()
-    } catch (error) {
-        res.status(400).send(error.message)
+      let files = req.files;
+      if (files.length == 0) {
+        return res
+          .status(400)
+          .send({ status: false, message: "please enter profileImage/productImage" });
+      }
+  
+      if (!/\.(gif|jpe?g|tiff?|png|webp|bmp|jfif)$/i.test(files[0].originalname)) {
+        return res
+          .status(400)
+          .send({
+            status: false,
+            message: "send profileimage in image formate only ex; gif,jpeg,png",
+          });
+      }
+  
+      if (files && files.length > 0) {
+        let uploadedFileURL = await uploadFile(files[0]);
+        req.uploadedFileURL = uploadedFileURL;
+      }
+  
+        
+      next();
+    } catch (err) {
+      res.status(500).send({ status:false,error: err.message });
     }
-  }
+  };
 
-  module.exports = {awsApi}
+  module.exports = {awsApi,uploadFile}

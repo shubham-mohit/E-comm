@@ -6,6 +6,9 @@ const ObjectId = mongoose.Types.ObjectId
 
 const createuser = async function(req,res){
     let Data = req.body
+    let profileImage = req.uploadedFileURL 
+    Data.profileImage = profileImage
+    if(!profileImage) {return res.status(400).send({status: false, message: "ProfileImage is required"})}
     try {
         let create = await usermodel.create(Data)
         res.status(201).send({status: true, Message: "User created succesfully", data: create})
@@ -57,7 +60,13 @@ const getUser = async function(req,res){
 }
 
 const updateuser = async function(req,res){
-    
+    let IdFromParam = req.params.userId
+    try {
+        const updateInfo = await usermodel.findOneAndUpdate({_id: IdFromParam}, req.Data, {new:true})
+        res.status(200).send({status: true, Message: "User profile updated", data: updateInfo})
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
 }
 
-module.exports = {createuser,login,getUser}
+module.exports = {createuser,login,getUser,updateuser}
