@@ -47,50 +47,53 @@ const updateuser = async function(req,res,next){
             Data.password = Hash
          }
          if(address){
+            address = JSON.parse(Data.address)
             if(typeof address != "object") {return res.status(400).send({status:false, message: "Address should be in key-value pair"})}
             if(! Object.keys(address).length) {return res.status(400).send({status:false , message: "address have property like shipping and billing"})}
 
             if(address.shipping) {
                 let {pincode, city, street} = address.shipping
-                if(address.shipping.hasOwnProperty(city)){
+                if(address.shipping.city){
                     Data.address.shipping.city = city
                 }
-                if(address.shipping.hasOwnProperty(street)){
+                if(address.shipping.street){
                     Data.address.shipping.street = street
                 }
-                if(address.shipping.hasOwnProperty(pincode)){
+                if(address.shipping.pincode){
                     if(!pincoderegex.test(pincode)){return res.status(400).send({status: false, message: "Pincode format is not valid "})}
                     Data.address.shipping.pincode = pincode
                 }
             }
             if(address.billing){
                 let {pincode,city,street} = address.billing
-                if(address.billing.hasOwnProperty(city)){
+                if(address.billing.city){
                     Data.address.billing.city = city
                 }
-                if(address.billing.hasOwnProperty(street)){
+                if(address.billing.street){
                     Data.address.billing.street = street
                 }
-                if(address.billing.hasOwnProperty(pincode)){
+                if(address.billing.pincode){
                     if(!pincoderegex.test(pincode)){return res.status(400).send({status: false, message: "Pincode format is not valid "})}
                     Data.address.billing.pincode = pincode
                 }
             }
          }
-         if(Data.profileImage){
-            if(Data.profileImage == "") {return res.status(400).send({status: false, message: "Enter profileImage "})}
-            if (/\.(gif|jpe?g|tiff?|png|webp|bmp|jfif)$/i.test(profileImage[0].originalname)) {
-                return res.status(400).send({status:false, message: "Image should be in jpj,png format"})
-            }
-            const proImage = async function(req,res){
+         
+         let profileImage = req.files
+            // console.log(profileImage)
+         if(profileImage){
+            
+            if(profileImage == "") {return res.status(400).send({status: false, message: "Enter profileImage "})}
+            // console.log(profileImage)
+            // const proImage = async function(req,res){
                 if(profileImage.length > 0) {
                     let uploadFileUrl = await uploadFile(profileImage[0])
-                    return uploadFileUrl
+                   Data.profileImage =  uploadFileUrl 
                 }else{
                     return res.status(400).send({status: false , message: "No file found"})
                 }
-            }
-            Data.profileImage = await proImage()
+            // }
+            //  await proImage()
          }
          req.Data = Data
          next()
@@ -100,3 +103,4 @@ const updateuser = async function(req,res,next){
     }
 
 }
+module.exports = {updateuser}

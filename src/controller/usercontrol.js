@@ -39,7 +39,7 @@ const login = async function(req,res){
             userId : checkEmail._id
         },
         "Shubham_key",
-        {expiresIn : "365d"},
+        {expiresIn : "100d"},
         { iat: Date.now()}
         )
         return res.status(201).send({status:true, Message: "Login successfully", data:{userId: checkEmail._id, Token}})
@@ -59,8 +59,10 @@ const getUser = async function(req,res){
     }
 }
 
-const updateuser = async function(req,res){
+const updateduser = async function(req,res){
     let IdFromParam = req.params.userId
+    console.log(req.Data , "hi")
+    
     try {
         const updateInfo = await usermodel.findOneAndUpdate({_id: IdFromParam}, req.Data, {new:true})
         res.status(200).send({status: true, Message: "User profile updated", data: updateInfo})
@@ -69,4 +71,4 @@ const updateuser = async function(req,res){
     }
 }
 
-module.exports = {createuser,login,getUser,updateuser}
+module.exports = {createuser,login,getUser,updateduser}

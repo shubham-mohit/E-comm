@@ -13,21 +13,22 @@ const authorize = async function(req,res,next){
 
         if(!req.headers.authorization) {return res.status(400).send({status: false, message: "Header is not present"})}
 
-        let Token = req.headers.authorization
+        let Token = req.headers.authorization.split(" ")[1]
         if(!Token) {return res.status(400).send({status: false, message: "Token is not present" })}
 
-        let decodeToken = jwt.verify(Token, "shubham_key" )
-        if(!decodeToken){return res.status(401).send({status:false, message: "Token is not valid"})}
+        jwt.verify(Token, "Shubham_key" , async (error,decode) => {
+            if(error) {res.status(400).send({status: false, message: "Token is not valid"})}
         else{
-            req.userId = decodeToken.userId
-            if(req.userId != userIdFromParam) {return res,status(403).send({status:false, message: "Unauthorized"})}
-            else{
+            req.userId = decode.userId
+            if(req.userId != userIdFromParam) {return res.status(403).send({status:false, message: "Unauthorized"})}
+            
                 next()
-            }
+            
         }
-    } catch (error) {
-        res.status(500).send(error.message)
+    })
+    }
+     catch (error) {
+        res.status(500).send({status: false, Error: error.message})
     }
 }
-
 module.exports = {authorize}
