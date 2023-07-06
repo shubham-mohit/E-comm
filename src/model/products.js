@@ -6,7 +6,7 @@ const productSchema = new mongoose.Schema({
         price: {type:Number ,  required:true },
         currencyId: {type: String , required: true },
         currencyFormat: {type: String, required:true },
-        isFreeShipping: {type: false, default: false},
+        isFreeShipping: {type: Boolean, default: false},
         productImage: {type:Number ,  required:true },  // s3 link
         style: {type: String},
         availableSizes: {type : [String], enum: ["S", "XS","M","X", "L","XXL", "XL"]},

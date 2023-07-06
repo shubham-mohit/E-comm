@@ -8,7 +8,7 @@ const createuser = async function(req,res){
     let Data = req.body
     let profileImage = req.uploadedFileURL 
     Data.profileImage = profileImage
-    if(!profileImage) {return res.status(400).send({status: false, message: "ProfileImage is required"})}
+    // if(!profileImage) {return res.status(400).send({status: false, message: "ProfileImage is required"})}
     try {
         let create = await usermodel.create(Data)
         res.status(201).send({status: true, Message: "User created succesfully", data: create})
