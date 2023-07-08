@@ -15,13 +15,13 @@ const createProd = async function(req,res){
     Data.productImage = productImage
     try {
         let {title, description,price,currencyId,currencyFormat,isFreeShipping,style,deletedAt,isDeleted,availableSizes,installment} = Data
-        console.log("Hi")
+        // console.log("Hi")
         if(!isValid(title)) {return res.status(400).send({status: false, message: "Title is required"})}
         const checkDuplicate = await productModel.findOne({title: title})
         if(checkDuplicate) {return res.status(400).send({status: false, message:"Please try another title already in use"})}
 
         if(!isValid(description)) {return res.status(400).send({status:false, message: "Description is required"})}
-        console.log("hi")
+        // console.log("hi")
 
         if(!price) {return res.status(400).send({status:false, message: "Price is required"})}
         if(typeof price != "number") {return res.status(400).send({status:false, message: "Price type not correct"})}
