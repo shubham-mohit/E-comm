@@ -38,7 +38,7 @@ const userValid = async function(req,res,next){
             return res.status(400).send({status:false, message: "Phone no is required"})
         }
         if(!/^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[6789]\d{9}$/.test(phone)){
-            return res.status(400).send({status:false, message: "Please enter Indian M"})
+            return res.status(400).send({status:false, message: "Please enter Indian Mobile no"})
         }
         const checkPhone = await userModel.findOne({phone:phone})
         if(checkPhone){
@@ -49,7 +49,7 @@ const userValid = async function(req,res,next){
         if(!isValid(password)){
             return res.status(400).send({status:false, message: "Password is requird"})
         }
-        if(!(password.length > 8 && password.length < 16)){
+        if(!(password.length > 7 && password.length < 16)){
             return res.status(400).send({status:false, message: "Password is not correct"})
         }
         var saltRound = 10

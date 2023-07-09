@@ -1,7 +1,7 @@
 const userModel = require('../model/usermodel')
 const validator = require('validator')
-const pincoderegex = "^[1-9][0-9]{5}$ " 
-const mobileregex = " ^(?:(?:\+|0{0,2})91(\s*[\ -]\s*)?|[0]?)?[6789]\d{9}$ "
+const pincoderegex = /^[1-9][0-9]{5}$/
+const mobileregex =  /^(?:(?:\+|0{0,2})91(\s*[\ -]\s*)?|[0]?)?[6789]\d{9}$/
 const {uploadFile} = require('../middleware/aws') 
 const bcrypt = require('bcrypt')
 
@@ -80,20 +80,15 @@ const updateuser = async function(req,res,next){
          }
          
          let profileImage = req.files
-            // console.log(profileImage)
          if(profileImage){
             
             if(profileImage == "") {return res.status(400).send({status: false, message: "Enter profileImage "})}
-            // console.log(profileImage)
-            // const proImage = async function(req,res){
                 if(profileImage.length > 0) {
                     let uploadFileUrl = await uploadFile(profileImage[0])
                    Data.profileImage =  uploadFileUrl 
                 }else{
                     return res.status(400).send({status: false , message: "No file found"})
                 }
-            // }
-            //  await proImage()
          }
          req.Data = Data
          next()

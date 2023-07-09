@@ -50,9 +50,7 @@ let uploadFile = async (file) => {
       if (files && files.length > 0) {
         let uploadedFileURL = await uploadFile(files[0]);
         req.uploadedFileURL = uploadedFileURL;
-      }
-  
-        
+      } 
       next();
     } catch (err) {
       res.status(500).send({ status:false,error: err.message });

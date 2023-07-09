@@ -14,7 +14,7 @@ const createProd = async function(req,res){
     let productImage = req.uploadedFileURL
     Data.productImage = productImage
     try {
-        let {title, description,price,currencyId,currencyFormat,isFreeShipping,style,deletedAt,isDeleted,availableSizes,installment} = Data
+        let {title, description,price,currencyId,currencyFormat,isFreeShipping,deletedAt,isDeleted,availableSizes,installment} = Data
         // console.log("Hi")
         if(!isValid(title)) {return res.status(400).send({status: false, message: "Title is required"})}
         const checkDuplicate = await productModel.findOne({title: title})
@@ -39,7 +39,7 @@ const createProd = async function(req,res){
        if(!availableSizes && availableSizes == "") {return res.status(400).send({status:false, message: "availablesize is required"})}
        let array = availableSizes.split(",").map((x) => x.toUpperCase())
        if(array.length < 1) {return res.status(400).send({status:false, message: "atleast one content"})}
-        if(!array.includes(["S", "XS","M","X", "L","XXL", "XL"])) {return res.status(400).send({status:false, message: "Invalid size"})}
+       if(!array.includes(["S", "XS","M","X", "L","XXL", "XL"])) {return res.status(400).send({status:false, message: "Invalid size"})}
        if(Array.isArray(array)){
         let addElement = new Set(array)
         let result = [...addElement]
@@ -49,7 +49,7 @@ const createProd = async function(req,res){
         if(typeof installment != "number") {return res.status(400).send({status:false, message: "Installment type should be number"})}
        }
        if(deletedAt){
-        if(deletedAt != Date) {return res.status(400).send({status:false, message:"Format should be Data"})}
+        if(deletedAt != Date) {return res.status(400).send({status:false, message:"Format should be Date"})}
        }
 
        if(isDeleted){
@@ -92,7 +92,7 @@ const getProd = async function(req,res){
             const searchData = await productModel.find(filter,{isDeleted: false}).sort({price:1})
         }
         if(priceSort == -1) {
-            const searchData = await productModel.find(filter, {isDeleted: false}).sort({price:1})
+            const searchData = await productModel.find(filter, {isDeleted: false}).sort({price:-1})
         }
         if(searchData.length > 0) {
             res.status(200).send({status: false, message: "Succes" , data:searchData })

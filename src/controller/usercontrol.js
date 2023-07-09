@@ -8,7 +8,6 @@ const createuser = async function(req,res){
     let Data = req.body
     let profileImage = req.uploadedFileURL 
     Data.profileImage = profileImage
-    // if(!profileImage) {return res.status(400).send({status: false, message: "ProfileImage is required"})}
     try {
         let create = await usermodel.create(Data)
         res.status(201).send({status: true, Message: "User created succesfully", data: create})
@@ -22,7 +21,7 @@ const login = async function(req,res){
     let Data = req.body
     let {email,password} = Data
     try {
-        if(!Data) {return res.status(400).send({status:false, message: "Plz enternthe data"})}
+        if(!Data) {return res.status(400).send({status:false, message: "Plz enter the data"})}
 
         if(!email){
             return res.status(400).send({status:false, message: "Plz enter email"})
@@ -53,6 +52,7 @@ const getUser = async function(req,res){
     let userIdFromParam = req.params.userId
     try {
         const fetchuser = await usermodel.findById(userIdFromParam)
+        if(!fetchuser) {return res.status(404).send({ststus:false, message: "User not found"})}
         res.status(200).send({status:false , Message:"User profile details" , data: fetchuser})
     } catch (error) {
         res.status(500).send(error.message)
@@ -61,8 +61,6 @@ const getUser = async function(req,res){
 
 const updateduser = async function(req,res){
     let IdFromParam = req.params.userId
-    console.log(req.Data , "hi")
-    
     try {
         const updateInfo = await usermodel.findOneAndUpdate({_id: IdFromParam}, req.Data, {new:true})
         res.status(200).send({status: true, Message: "User profile updated", data: updateInfo})

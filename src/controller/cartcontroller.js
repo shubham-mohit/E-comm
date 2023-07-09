@@ -46,7 +46,7 @@ let isValid = function (value) {
   
       // * validation requestBody
   
-      let { productId, quantity } = req.body;
+      let { productId, quantity } = reqbody;
       let data = { userId };
       if (!quantity) {
         quantity = 1;
