@@ -1,6 +1,6 @@
 
 const orderModel = require('../model/ordermodel')
-
+const ObjectId = require('mongoose').Types.ObjectId
 
 const createOrder = async function(req,res){
     try {
@@ -25,7 +25,7 @@ const createOrder = async function(req,res){
             orders.totalQuantity += findCart.items[i].quantity
         }
         const newOrder = await orderModel.create(orders)
-        res.status(201).send({status:true, message:"Success", data: orders})
+        res.status(201).send({status:true, message:"Success", data: newOrder})
 
     } catch (error) {
         res.status(500).send({status:false, Error: error.message})
@@ -37,7 +37,7 @@ const updateCartOrder = async function(req,res) {
         let userId = req.params.userId
         let{orderId, status} = req.body
         if(!orderId) {return res.status(400).send({status:false, message: "orderId is required"})}
-        if(!mongoose.isValidObjectID(orderId)) {return res.status(400).send({status:false, message: "OrderId is not valid "})}
+        if(!ObjectId.isValid(orderId)) {return res.status(400).send({status:false, message: "OrderId is not valid "})}
         const findOrder = await orderModel.findOne({_id:orderId}).populate([{path : "items.productId"}])
         if(!findOrder) {return res.status(404).send({status:false, message: "Order not found"})}
         else{

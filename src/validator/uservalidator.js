@@ -1,5 +1,7 @@
 const userModel = require("../model/usermodel")
 const validator = require('email-validator')
+const mongoose = require('mongoose')
+const ObjectId = mongoose.Types.ObjectId
 const bcrypt = require('bcrypt')
 // const mobileregex = " ^(?:(?:\+|0{0,2})91(\s*[\ -]\s*)?|[0]?)?[6789]\d{9}$ " 
 const pincoderegex = /^[1-9][0-9]{5}$/

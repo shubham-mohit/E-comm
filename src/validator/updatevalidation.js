@@ -4,6 +4,7 @@ const pincoderegex = /^[1-9][0-9]{5}$/
 const mobileregex =  /^(?:(?:\+|0{0,2})91(\s*[\ -]\s*)?|[0]?)?[6789]\d{9}$/
 const {uploadFile} = require('../middleware/aws') 
 const bcrypt = require('bcrypt')
+const ObjectId = require('mongoose').Types.ObjectId
 
 
 const isValid = function (value) {

@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken')
 const authorize = async function(req,res,next){
     let userIdFromParam = req.params.userId
     try {
-        if(!mongoose.isValidObjectId(userIdFromParam)) {return res.status(400).send({status: false, message: "Invalid objectId"})}
+        if(!ObjectId.isValid(userIdFromParam)) {return res.status(400).send({status: false, message: "Invalid objectId"})}
         const checkUser = await userModel.findOne({_id:userIdFromParam})
         if(!checkUser) {return res.status(404).send({status: false, message: "User not found"})}
 
