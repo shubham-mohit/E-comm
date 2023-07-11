@@ -80,7 +80,7 @@ let isValid = function (value) {
       let getProduct = await productModel.findOne({ _id: productId ,isDeleted:false});
   
       if (getProduct == null) {
-        return res.status(400).send({
+        return res.status(404).send({
           status: false,
           message: "no product found with this product id",
         });

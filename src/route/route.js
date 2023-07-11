@@ -18,14 +18,14 @@ router.put('/user/:userId/profile', authorize , updateuser, updateduser)
 router.post('/products', awsApi, createProd )
 router.get('/products', getProd )
 router.get('/products/:productId', getProdById)
-router.put('/products/:productId', deleteApi)
+router.delete('/products/:productId', deleteApi)
 router.put('/products/:productId', updateProd)
 
 
 router.post('/users/:userId/cart', authorize , createCart )
-router.get('/users/:userId/cart', authorize , updateCart)
+router.put('/users/:userId/cart', authorize , updateCart)
 router.get('/users/:userId/cart', authorize , getCart)
-router.put('/users/:userId/cart', authorize, deleteCart)
+router.delete('/users/:userId/cart', authorize, deleteCart)
 
 
 router.post('/users/:userId/orders', authorize, createOrder)

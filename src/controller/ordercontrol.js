@@ -4,7 +4,7 @@ const ObjectId = require('mongoose').Types.ObjectId
 
 const createOrder = async function(req,res){
     try {
-        let {cartId,cancellable } = req.body
+        let {cartId,cancellable,status } = req.body
         if(!cartId) {return res.status(400).send({status:false, Message:"cartId is required"})}
 
         const findCart = await cartmodel.findOne({_id:cartId, userId:userId})
@@ -14,6 +14,11 @@ const createOrder = async function(req,res){
         orders.totalQuantity = 0
         orders.totalItems = findCart.totalItems
         orders["items"] = findCart.items
+
+        if(status){
+            if(!(['pending','cancled','completed'].includes(status))){return res.status(400).send({status:false, message: "Only include this 3 value"})}
+            orders.status = status
+        }
 
         if(cancellable) {
             if(typeof cancellable != "boolean") {return res.status(400).send({status:false, Message: "Cancellable type should be boolean"})}
@@ -42,7 +47,7 @@ const updateCartOrder = async function(req,res) {
         if(!findOrder) {return res.status(404).send({status:false, message: "Order not found"})}
         else{
             if(status){
-                if(!status.includes(["completed" , "pending" , 'cancled'])) {return res.status(400).send({status:false, message: "Status includes only these 3 values"})}
+                if(!(["completed" , "pending" , 'cancled'].includes(status))) {return res.status(400).send({status:false, message: "Status includes only these 3 values"})}
                 if(findOrder.status == completed && status != completed){
                     res.status(400).send({status:false, message: "order is already completed can not update it"})
                 }

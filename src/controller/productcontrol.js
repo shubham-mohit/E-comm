@@ -93,13 +93,10 @@ const getProd = async function(req,res){
         if(priceLessThan && priceGreaterThan) {
             filter.price = {$and : [{$gt: priceGreaterThan} , {$lt:priceLessThan}]}
         }
-        if(priceSort == 1){
-            const searchData = await productModel.find(filter,{isDeleted: false}).sort({price:1})
-        }
-        if(priceSort == -1) {
-            const searchData = await productModel.find(filter, {isDeleted: false}).sort({price:-1})
-        }
-        if(searchData.length > 0) {
+       
+            const searchData = await productModel.find(filter,{isDeleted: false}).sort({price:priceSort})
+       
+        if(searchData.length != 0) {
             res.status(200).send({status: false, message: "Succes" , data:searchData })
         }
         else{
@@ -116,7 +113,7 @@ const getProd = async function(req,res){
 const getProdById = async function(req,res){
     try {
         let IdFromParams = req.params.productId
-        if(!mongoose.isValidObjectId(IdFromParams)) {return res.status(400).send({status:false, message: "ObjectId is not valid"})}
+        if(!Object.isValid(IdFromParams)) {return res.status(400).send({status:false, message: "ObjectId is not valid"})}
 
         const checkData = await productModel.findOne({_id:IdFromParams , isDeleted:false})
         if(!checkData) {return res.status(404).send({status:false, message: "No data found"})}
@@ -134,7 +131,7 @@ const getProdById = async function(req,res){
 const deleteApi = async function(req,res) {
     try {
         let IdFromParam = req.params.productId
-        if(mongoose.isValidObjectId(IdFromParam)) {return res.status(400).send({status:false, message: "ObjectId is not valid"})}
+        if(!ObjectId.isValid(IdFromParam)) {return res.status(400).send({status:false, message: "ObjectId is not valid"})}
 
         const checkId = await productModel.findById(IdFromParam)
         if(!checkId) {return res.status(404).send({status:false, message:"No data found"})}
