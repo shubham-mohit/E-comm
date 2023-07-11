@@ -2,7 +2,7 @@ const userModel = require("../model/usermodel")
 const validator = require('email-validator')
 const bcrypt = require('bcrypt')
 // const mobileregex = " ^(?:(?:\+|0{0,2})91(\s*[\ -]\s*)?|[0]?)?[6789]\d{9}$ " 
-const pincoderegex = /[1-9][0-9]{5}$/
+const pincoderegex = /^[1-9][0-9]{5}$/
 
 const isValid = function (value) {
     if (typeof value !== "string" || value === null) return false;
@@ -72,7 +72,7 @@ const userValid = async function(req,res,next){
 
         if(!isValid(shipping.street)) {return res.status(400).send({status:false, message: "Invalid street type "})}
         if(!isValid(shipping.city)) {return res.status(400).send({status:false, message: "Invalid street type "})}
-        if(pincoderegex.test(shipping.pincode)) {return res.status(400).send({status:false, message: "Invalid pincode format"})}
+        if(!pincoderegex.test(shipping.pincode)) {return res.status(400).send({status:false, message: "Invalid pincode format"})}
 
         if(typeof billing !== "object") {return res.status(400).send({status:false, message: "Billing should be in key value pair"})}
         if(!billing.street) {return res.status(400).send({status:false, message: "Street is mandatory "})}
@@ -81,7 +81,7 @@ const userValid = async function(req,res,next){
 
         if(!isValid(billing.street)) {return res.status(400).send({status:false, message: "Invalid street type "})}
         if(!isValid(billing.city)) {return res.status(400).send({status:false, message: "Invalid street type "})}
-        if(pincoderegex.test(billing.pincode)) {return res.status(400).send({status:false, message: "Invalid pincode format"})}
+        if(!pincoderegex.test(billing.pincode)) {return res.status(400).send({status:false, message: "Invalid pincode format"})}
 
         Data.address = address
         next()

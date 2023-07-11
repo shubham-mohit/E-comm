@@ -24,9 +24,10 @@ const createProd = async function(req,res){
         // console.log("hi")
 
         if(!price) {return res.status(400).send({status:false, message: "Price is required"})}
+        price = JSON.parse(price)
         if(typeof price != "number") {return res.status(400).send({status:false, message: "Price type not correct"})}
 
-        if(isValid(currencyId)) {return res.status(400).send({status:false, message: "CurrencyId is required "})}
+        if(!isValid(currencyId)) {return res.status(400).send({status:false, message: "CurrencyId is required "})}
         if(currencyId != "INR") {return res.status(400).send({status: false, message: "CurrencyId is not not Right"})}
 
         if(!isValid(currencyFormat)) {return res.status(400).send({status: false, message: "CurrencyFormat is required "})}
@@ -38,15 +39,19 @@ const createProd = async function(req,res){
 
        if(!availableSizes && availableSizes == "") {return res.status(400).send({status:false, message: "availablesize is required"})}
        let array = availableSizes.split(",").map((x) => x.toUpperCase())
+       for(let i=0;i<array.length;i++){
+       console.log(array)
        if(array.length < 1) {return res.status(400).send({status:false, message: "atleast one content"})}
-       if(!array.includes(["S", "XS","M","X", "L","XXL", "XL"])) {return res.status(400).send({status:false, message: "Invalid size"})}
+       if(!(['S','XS','M','X', 'L','XXL', 'XL'].includes(array[i]))) {return res.status(400).send({status:false, message: "Invalid size"})}
+        }
        if(Array.isArray(array)){
         let addElement = new Set(array)
         let result = [...addElement]
         Data.availableSizes = result
        }
        if(installment) {
-        if(typeof installment != "number") {return res.status(400).send({status:false, message: "Installment type should be number"})}
+        installment = JSON.parse(installment)
+        if(typeof installment != 'number') {return res.status(400).send({status:false, message: "Installment type should be number"})}
        }
        if(deletedAt){
         if(deletedAt != Date) {return res.status(400).send({status:false, message:"Format should be Date"})}
@@ -147,6 +152,71 @@ const deleteApi = async function(req,res) {
     }
 }
 
+const updateProd = async function(req,res) {
+    try {
+        let Data = req.body
+        let productId = req.params.productId
+        let {title, description,price,currencyId,currencyFormat,isFreeShipping,deletedAt,isDeleted,availableSizes,installment} = Data
+        if(title) {
+           if(!isValid(title)) {return res.status(400).send({status:false, message: "Title type is invalid"})}
+           const checkDulicate = await productModel.findOne({title: title})
+           if(checkDulicate) {return res.status(400).send({status:false, message: "title already in use try some different name"})}
+        }
 
+        if(description) {
+            if(!isValid(description)) {return res.status(400).send({status:false, message: "Invalid description type"})}
+        }
 
-module.exports = {createProd,getProd,getProdById,deleteApi}
+        if(price) {
+            price = JSON.parse(price)
+            if(typeof price != "number") {return res.status(400).send({status:false, message: "Price type should be no"})}
+        }
+
+        if(currencyId) {
+            if(currencyId != "INR") {
+                return res.status(400).send({status:false, message: "CurrencyID is not in right format" })
+            }
+        }
+
+        if(currencyFormat) {
+            if(currencyFormat != "₹") {return res.status(400).send({status:false, message: "not valid currencyFormat"})}
+        }
+
+        if(isFreeShipping) {
+            if(typeof isFreeShipping != 'boolean') {return res.status(400).send({status:false, message: "shipping type should be boolean"})}
+        }
+
+        if(availableSizes) {
+            let array = availableSizes.split(",").map((x)=> x.toUpperCase())
+            if(array.length < 1) {return res.status(400).send({status:false, message: "Atleast one element is required"})}
+            for(let i=0;i<array.length;i++){
+                if(!(['S','XS','M','X', 'L','XXL', 'XL'].includes(array[i]))) {return res.status(400).send({status:false, message: "Invalid size"})}
+            }
+            if(Array.isArray(array)){
+                let addElement = new Set(array)
+                let result = [...addElement]
+                Data.availableSizes = result
+            }
+        }
+
+        if(installment) {
+            installment = JSON.parse(installment)
+            if(typeof installment != 'number') {return res.status(400).send({status:false, message: 'Installment type should be number'})}
+        }
+
+        if(deletedAt) {
+            if(typeof deletedAt != 'Date') {return res.status(400).send({status:false, message:"Deleted at format should be DATE"})}
+        }
+
+        if(isDeleted) {
+            if(typeof isDeleted != 'boolean') {return res.status(400).send({status:false, message: "deleted type should be boolean"})}
+        }
+
+        const updatedProducts = await productModel.findOneAndUpdate({_id:productId}, Data, {new:true})
+        res.status(200).send({status:false, message:updatedProducts})
+    } catch (error) {
+        res.status(500).send({status:false, Error:error.message})
+    }
+}
+
+module.exports = {createProd,getProd,getProdById,deleteApi,updateProd}

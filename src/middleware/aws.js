@@ -38,14 +38,14 @@ let uploadFile = async (file) => {
           .send({ status: false, message: "please enter profileImage/productImage" });
       }
   
-      if (!/\.(gif|jpe?g|tiff?|png|webp|bmp|jfif)$/i.test(files[0].originalname)) {
-        return res
-          .status(400)
-          .send({
-            status: false,
-            message: "send profileimage in image formate only ex; gif,jpeg,png",
-          });
-      }
+      // if (!/\.(gif|jpe?g|tiff?|png|webp|bmp|jfif)$/i.test(files[0].originalname)) {
+      //   return res
+      //     .status(400)
+      //     .send({
+      //       status: false,
+      //       message: "send profileimage in image formate only ex; gif,jpeg,png",
+      //     });
+      // }
   
       if (files && files.length > 0) {
         let uploadedFileURL = await uploadFile(files[0]);

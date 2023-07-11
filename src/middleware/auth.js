@@ -11,10 +11,11 @@ const authorize = async function(req,res,next){
         const checkUser = await userModel.findOne({_id:userIdFromParam})
         if(!checkUser) {return res.status(404).send({status: false, message: "User not found"})}
 
-        if(!req.headers.authorization) {return res.status(400).send({status: false, message: "Header is not present"})}
+        // if(!req.headers.authorization) {return res.status(400).send({status: false, message: "Header is not present"})}
 
         let Token = req.headers.authorization.split(" ")[1]
-        if(!Token) {return res.status(400).send({status: false, message: "Token is not present" })}
+        // console.log(Token)
+        if(!Token) {return res.status(401).send({status: false, message: "Token is not present" })}
 
         jwt.verify(Token, "Shubham_key" , async (error,decode) => {
             if(error) {res.status(400).send({status: false, message: "Token is not valid"})}

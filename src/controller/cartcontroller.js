@@ -52,6 +52,7 @@ let isValid = function (value) {
         quantity = 1;
       }
       if (quantity) {
+        quantity = JSON.parse(quantity)
         if (typeof quantity != "number") {
           return res.status(400).send({
             status: false,
@@ -68,7 +69,7 @@ let isValid = function (value) {
           .send({ status: false, message: "product is invalid" });
       }
   
-      if (!isValidObjectId(productId)) {
+      if (!mongoose.isValidObjectId(productId)) {
         return res
           .status(400)
           .send({ status: false, message: "product is invalid" });
@@ -207,12 +208,13 @@ let isValid = function (value) {
     try {
         let userId = req.params.path
         let Data = req.body
+        Data = JSON.parse(Data)
         let {cartId, productId,removeProduct} = Data
         if(!cartId) {return res.status(400).send({status:false, message: "CartId is required"})}
-        if(mongoose.isValidObjectId(cartId)) {return res.status(404).send({status:false, message: "Plz enter a valid cartId"})}
+        if(!mongoose.isValidObjectId(cartId)) {return res.status(404).send({status:false, message: "Plz enter a valid cartId"})}
 
         if(!productId) {return res.status(400).send({status:false, message: "productId is required"})}
-        if(mongoose.isValidObjectId(productId)) {return res.status(404).send({status:false, message: "Plz enter a valid productId"})}
+        if(!mongoose.isValidObjectId(productId)) {return res.status(404).send({status:false, message: "Plz enter a valid productId"})}
 
         const checkDetails = await cartModel.findOne({_id:cartId, userId:userId, "items.productId":productId}).populate([{path: "items.productId"}])
         if(!checkDetails || checkDetails.totalItems == 0) 

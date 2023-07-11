@@ -5,7 +5,7 @@ const {createuser,login,getUser,updateduser} = require('../controller/usercontro
 const {updateuser} = require('../validator/updatevalidation')
 const { awsApi } = require('../middleware/aws')
 const {authorize} = require('../middleware/auth')
-const {createProd,getProd,getProdById,deleteApi} = require('../controller/productcontrol')
+const {createProd,getProd,getProdById,deleteApi,updateProd} = require('../controller/productcontrol')
 const {createCart,getCart,deleteCart,updateCart} = require('../controller/cartcontroller')
 const {updateCartOrder, createOrder} = require('../controller/ordercontrol')
 
@@ -19,6 +19,7 @@ router.post('/products', awsApi, createProd )
 router.get('/products', getProd )
 router.get('/products/:productId', getProdById)
 router.put('/products/:productId', deleteApi)
+router.put('/products/:productId', updateProd)
 
 
 router.post('/users/:userId/cart', authorize , createCart )
